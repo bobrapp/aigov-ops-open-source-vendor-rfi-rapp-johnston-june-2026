@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AIGovOps Vendor RFI/RFP Composer</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 2rem; line-height: 1.4; }
+    h1, h2 { margin-bottom: 0.5rem; }
+    section { border: 1px solid #ddd; padding: 1rem; margin-bottom: 1rem; border-radius: 6px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 0.5rem; }
+    label { display: block; margin: 0.35rem 0; }
+    input, select, button { padding: 0.35rem; }
+    table { width: 100%; border-collapse: collapse; margin-top: 0.8rem; }
+    th, td { border: 1px solid #ddd; padding: 0.5rem; text-align: left; }
+    .muted { color: #555; font-size: 0.95rem; }
+    .score { font-size: 1.2rem; font-weight: 700; }
+    .warn { color: #9a3d00; font-weight: 600; }
+  </style>
+</head>
+<body>
+  <h1>AIGovOps Foundation Vendor RFI/RFP Webapp</h1>
+  <p class="muted">Evidence-oriented vendor stack composer for <strong>Beacon</strong> and <strong>Umbrella</strong>, including an auditor value model and neutral vendor sponsorship framework.</p>
+
+  <section>
+    <h2>1) Evidence-Oriented Stack Composer (Beacon + Umbrella)</h2>
+    <div class="grid">
+      <div>
+        <h3>Beacon Stack</h3>
+        <label><input type="checkbox" value="Policy Engine" data-stack="beacon"> Policy Engine</label>
+        <label><input type="checkbox" value="Model Registry" data-stack="beacon"> Model Registry</label>
+        <label><input type="checkbox" value="Runtime Guardrails" data-stack="beacon"> Runtime Guardrails</label>
+      </div>
+      <div>
+        <h3>Umbrella Stack</h3>
+        <label><input type="checkbox" value="Identity Federation" data-stack="umbrella"> Identity Federation</label>
+        <label><input type="checkbox" value="Continuous Controls" data-stack="umbrella"> Continuous Controls</label>
+        <label><input type="checkbox" value="Audit Ledger" data-stack="umbrella"> Audit Ledger</label>
+      </div>
+    </div>
+    <p><strong>Composed stack:</strong> <span id="stackOutput">None selected.</span></p>
+  </section>
+
+  <section>
+    <h2>2) Auditor Value Model</h2>
+    <form id="vendorForm">
+      <div class="grid">
+        <label>Vendor name
+          <input id="vendorName" required>
+        </label>
+        <label>Evidence URL
+          <input id="evidenceUrl" type="url" placeholder="https://example.com/evidence" required>
+        </label>
+        <label>Control coverage (0-100)
+          <input id="coverage" type="number" min="0" max="100" value="70" required>
+        </label>
+        <label>Risk reduction (0-100)
+          <input id="riskReduction" type="number" min="0" max="100" value="60" required>
+        </label>
+        <label>Annual cost (USD)
+          <input id="annualCost" type="number" min="0" value="100000" required>
+        </label>
+      </div>
+      <button type="submit">Add vendor evidence</button>
+    </form>
+    <p class="muted">Auditor value score = 45% control coverage + 35% risk reduction + 20% cost efficiency.</p>
+    <table>
+      <thead>
+        <tr>
+          <th>Vendor</th>
+          <th>Evidence</th>
+          <th>Coverage</th>
+          <th>Risk Reduction</th>
+          <th>Annual Cost</th>
+          <th>Auditor Value Score</th>
+        </tr>
+      </thead>
+      <tbody id="vendorRows"></tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>3) Neutral Vendor Sponsorship Framework</h2>
+    <label>Sponsoring organization (optional)
+      <input id="sponsorName" placeholder="Vendor or partner sponsor">
+    </label>
+    <label><input id="conflictCheck" type="checkbox"> Potential conflict disclosed</label>
+    <p id="sponsorNote" class="muted">Sponsorship is tracked for transparency only and is excluded from scoring calculations.</p>
+    <p id="conflictNote"></p>
+  </section>
+
+  <script>
+    const stackOutput = document.getElementById('stackOutput');
+    const vendorForm = document.getElementById('vendorForm');
+    const vendorRows = document.getElementById('vendorRows');
+    const sponsorName = document.getElementById('sponsorName');
+    const conflictCheck = document.getElementById('conflictCheck');
+    const conflictNote = document.getElementById('conflictNote');
+
+    function renderStack() {
+      const selections = Array.from(document.querySelectorAll('input[type="checkbox"][data-stack]:checked'))
+        .map((el) => `${el.dataset.stack}: ${el.value}`);
+      stackOutput.textContent = selections.length ? selections.join(' | ') : 'None selected.';
+    }
+
+    function computeAuditorValue(coverage, riskReduction, annualCost) {
+      const costEfficiency = Math.max(0, 100 - (annualCost / 500000) * 100);
+      return (coverage * 0.45) + (riskReduction * 0.35) + (costEfficiency * 0.20);
+    }
+
+    document.querySelectorAll('input[data-stack]').forEach((el) => {
+      el.addEventListener('change', renderStack);
+    });
+
+    vendorForm.addEventListener('submit', (event) => {
+      event.preventDefault();
+      const vendor = document.getElementById('vendorName').value.trim();
+      const evidence = document.getElementById('evidenceUrl').value.trim();
+      const coverage = Number(document.getElementById('coverage').value);
+      const riskReduction = Number(document.getElementById('riskReduction').value);
+      const annualCost = Number(document.getElementById('annualCost').value);
+      const score = computeAuditorValue(coverage, riskReduction, annualCost).toFixed(2);
+
+      const row = document.createElement('tr');
+      const vendorCell = document.createElement('td');
+      vendorCell.textContent = vendor;
+
+      const evidenceCell = document.createElement('td');
+      const evidenceLink = document.createElement('a');
+      const parsedUrl = new URL(evidence);
+      if (!['http:', 'https:'].includes(parsedUrl.protocol)) {
+        alert('Evidence URL must use http or https.');
+        return;
+      }
+      evidenceLink.href = parsedUrl.toString();
+      evidenceLink.target = '_blank';
+      evidenceLink.rel = 'noopener noreferrer';
+      evidenceLink.textContent = 'Evidence';
+      evidenceCell.appendChild(evidenceLink);
+
+      const coverageCell = document.createElement('td');
+      coverageCell.textContent = String(coverage);
+
+      const riskCell = document.createElement('td');
+      riskCell.textContent = String(riskReduction);
+
+      const costCell = document.createElement('td');
+      costCell.textContent = `$${annualCost.toLocaleString()}`;
+
+      const scoreCell = document.createElement('td');
+      scoreCell.className = 'score';
+      scoreCell.textContent = score;
+
+      row.append(vendorCell, evidenceCell, coverageCell, riskCell, costCell, scoreCell);
+      vendorRows.appendChild(row);
+      vendorForm.reset();
+    });
+
+    function renderSponsorship() {
+      const sponsor = sponsorName.value.trim();
+      const conflict = conflictCheck.checked;
+      conflictNote.textContent = conflict
+        ? `Conflict disclosed${sponsor ? ` for ${sponsor}` : ''}.`
+        : sponsor
+          ? `Sponsor recorded: ${sponsor}.`
+          : '';
+      conflictNote.className = conflict ? 'warn' : 'muted';
+    }
+
+    sponsorName.addEventListener('input', renderSponsorship);
+    conflictCheck.addEventListener('change', renderSponsorship);
+  </script>
+</body>
+</html>
