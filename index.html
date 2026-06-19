@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AIGovOps Vendor RFI — Stack Composer & Evidence Receipt</title>
+<style>
+:root{--bg:#0e1116;--card:#161b22;--ink:#e6edf3;--muted:#8b949e;--ok:#2ea043;--warn:#d29922;--gap:#f85149;--accent:#58a6ff}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink)}
+header{padding:28px 20px;border-bottom:1px solid #30363d}h1{margin:0 0 6px;font-size:22px}.sub{color:var(--muted);font-size:14px}
+main{max-width:1000px;margin:0 auto;padding:24px 20px}.card{background:var(--card);border:1px solid #30363d;border-radius:10px;padding:18px;margin:16px 0}
+table{width:100%;border-collapse:collapse;font-size:14px}th,td{text-align:left;padding:8px 10px;border-bottom:1px solid #30363d}
+.badge{padding:2px 8px;border-radius:12px;font-size:12px;font-weight:600}.ready{background:rgba(46,160,67,.15);color:var(--ok)}.integrate{background:rgba(210,153,34,.15);color:var(--warn)}.gap{background:rgba(248,81,73,.15);color:var(--gap)}
+label{display:block;margin:6px 0;font-size:14px}button{background:var(--accent);color:#0d1117;border:0;border-radius:6px;padding:8px 14px;font-weight:600;cursor:pointer}
+pre{background:#0d1117;border:1px solid #30363d;border-radius:8px;padding:12px;overflow:auto;font-size:12px}
+.unsigned{color:var(--warn);font-size:12px}h2{font-size:16px;border-bottom:1px solid #30363d;padding-bottom:6px}
+</style>
+</head>
+<body>
+<header>
+<h1>AIGovOps Vendor RFI — Stack Composer & Evidence Receipt</h1>
+<div class="sub">Beacon lens: unsigned evidence-receipt preview · Umbrella lens: vendor stack composer. Neutral, evidence-oriented, gap-aware.</div>
+</header>
+<main>
+<section class="card">
+<h2>1. Risk profile</h2>
+<label><input type="checkbox" id="p_reg"> Regulated / Fortune-100 manufacturing</label>
+<label><input type="checkbox" id="p_ot"> OT / IIoT environment (SCADA, DCS)</label>
+<label><input type="checkbox" id="p_vpc"> In-VPC / on-prem model scoring required</label>
+</section>
+<section class="card">
+<h2>2. Recommended three-layer stack</h2>
+<table>
+<tr><th>Layer</th><th>Default vendors</th><th>Status</th></tr>
+<tr><td>Compliance control plane (audit, policy library, dashboards)</td><td>Credo AI + IBM watsonx.governance</td><td><span class="badge ready">Ready</span></td></tr>
+<tr><td>Policy-as-code engine (gates, CI/CD, infra)</td><td>OPA / Styra DAS + HashiCorp Sentinel</td><td><span class="badge ready">Ready</span></td></tr>
+<tr><td>Runtime guardrails & agent observability</td><td>Fiddler AI + NVIDIA NeMo Guardrails</td><td><span class="badge integrate">Integrate</span></td></tr>
+<tr><td>Shipping the code (SCA, IaC scan)</td><td>Snyk / Wiz</td><td><span class="badge integrate">Integrate</span></td></tr>
+<tr><td>OT / IIoT governance</td><td>Claroty / Dragos / Nozomi</td><td><span class="badge gap">Gap</span></td></tr>
+</table>
+</section>
+<section class="card">
+<h2>3. Auditor value</h2>
+<p class="sub">Evidence-oriented vendor decisions: structured decision records, canonical exports, hash preview, cross-functional traceability, explicit gap visibility — not a single synthetic score. See <a href="auditor-value.md">auditor-value.md</a>.</p>
+</section>
+<section class="card">
+<h2>4. Vendor sponsorship</h2>
+<p class="sub">Sponsor the surface, not the score. Vendors may support labs, events, and tooling; they cannot buy ranking, hide gaps, or alter weighting. See <a href="vendor-sponsorship.md">vendor-sponsorship.md</a>.</p>
+</section>
+<section class="card">
+<h2>5. Evidence receipt preview <span class="unsigned">(UNSIGNED PREVIEW — not a Beacon attestation)</span></h2>
+<button onclick="gen()">Generate receipt</button>
+<pre id="out">{}</pre>
+</section>
+</main>
+<script>
+async function sha256(s){const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s));return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}
+async function gen(){
+const profile={regulated:p_reg.checked,ot:p_ot.checked,inVpc:p_vpc.checked};
+const body={schema:'aigovops.vendor-rfi/v0.1',generated:new Date().toISOString(),profile,stack:[{layer:'compliance',vendors:['Credo AI','IBM watsonx.governance'],status:'ready'},{layer:'policy-as-code',vendors:['OPA/Styra DAS','HashiCorp Sentinel'],status:'ready'},{layer:'runtime-guardrails',vendors:['Fiddler AI','NVIDIA NeMo Guardrails'],status:'integrate'},{layer:'ship-code',vendors:['Snyk','Wiz'],status:'integrate'},{layer:'ot-iiot',vendors:['Claroty','Dragos','Nozomi'],status:'gap'}]};
+const canonical=JSON.stringify(body,Object.keys(body).sort());
+const hash=await sha256(canonical);
+out.textContent=JSON.stringify({receipt:body,evidence_sha256:hash,signature:null,note:'Unsigned preview. Sign via Beacon (Ed25519+JCS) before use as audit evidence.'},null,2);
+}
+</script>
+</body>
+</html>
