@@ -1,67 +1,189 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>AIGovOps Vendor RFI — Stack Composer & Evidence Receipt</title>
-<style>
-:root{--bg:#0e1116;--card:#161b22;--ink:#e6edf3;--muted:#8b949e;--ok:#2ea043;--warn:#d29922;--gap:#f85149;--accent:#58a6ff}
-*{box-sizing:border-box}body{margin:0;font-family:system-ui,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink)}
-header{padding:28px 20px;border-bottom:1px solid #30363d}h1{margin:0 0 6px;font-size:22px}.sub{color:var(--muted);font-size:14px}
-main{max-width:1000px;margin:0 auto;padding:24px 20px}.card{background:var(--card);border:1px solid #30363d;border-radius:10px;padding:18px;margin:16px 0}
-table{width:100%;border-collapse:collapse;font-size:14px}th,td{text-align:left;padding:8px 10px;border-bottom:1px solid #30363d}
-.badge{padding:2px 8px;border-radius:12px;font-size:12px;font-weight:600}.ready{background:rgba(46,160,67,.15);color:var(--ok)}.integrate{background:rgba(210,153,34,.15);color:var(--warn)}.gap{background:rgba(248,81,73,.15);color:var(--gap)}
-label{display:block;margin:6px 0;font-size:14px}button{background:var(--accent);color:#0d1117;border:0;border-radius:6px;padding:8px 14px;font-weight:600;cursor:pointer}
-pre{background:#0d1117;border:1px solid #30363d;border-radius:8px;padding:12px;overflow:auto;font-size:12px}
-.unsigned{color:var(--warn);font-size:12px}h2{font-size:16px;border-bottom:1px solid #30363d;padding-bottom:6px}
-</style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AIGovOps Vendor RFI/RFP Composer</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 2rem; line-height: 1.4; }
+    h1, h2 { margin-bottom: 0.5rem; }
+    section { border: 1px solid #ddd; padding: 1rem; margin-bottom: 1rem; border-radius: 6px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 0.5rem; }
+    label { display: block; margin: 0.35rem 0; }
+    input, select, button { padding: 0.35rem; }
+    table { width: 100%; border-collapse: collapse; margin-top: 0.8rem; }
+    th, td { border: 1px solid #ddd; padding: 0.5rem; text-align: left; }
+    .muted { color: #555; font-size: 0.95rem; }
+    .score { font-size: 1.2rem; font-weight: 700; }
+    .warn { color: #9a3d00; font-weight: 600; }
+  </style>
 </head>
 <body>
-<header>
-<h1>AIGovOps Vendor RFI — Stack Composer & Evidence Receipt</h1>
-<div class="sub">Beacon lens: unsigned evidence-receipt preview · Umbrella lens: vendor stack composer. Neutral, evidence-oriented, gap-aware.</div>
-</header>
-<main>
-<section class="card">
-<h2>1. Risk profile</h2>
-<label><input type="checkbox" id="p_reg"> Regulated / Fortune-100 manufacturing</label>
-<label><input type="checkbox" id="p_ot"> OT / IIoT environment (SCADA, DCS)</label>
-<label><input type="checkbox" id="p_vpc"> In-VPC / on-prem model scoring required</label>
-</section>
-<section class="card">
-<h2>2. Recommended three-layer stack</h2>
-<table>
-<tr><th>Layer</th><th>Default vendors</th><th>Status</th></tr>
-<tr><td>Compliance control plane (audit, policy library, dashboards)</td><td>Credo AI + IBM watsonx.governance</td><td><span class="badge ready">Ready</span></td></tr>
-<tr><td>Policy-as-code engine (gates, CI/CD, infra)</td><td>OPA / Styra DAS + HashiCorp Sentinel</td><td><span class="badge ready">Ready</span></td></tr>
-<tr><td>Runtime guardrails & agent observability</td><td>Fiddler AI + NVIDIA NeMo Guardrails</td><td><span class="badge integrate">Integrate</span></td></tr>
-<tr><td>Shipping the code (SCA, IaC scan)</td><td>Snyk / Wiz</td><td><span class="badge integrate">Integrate</span></td></tr>
-<tr><td>OT / IIoT governance</td><td>Claroty / Dragos / Nozomi</td><td><span class="badge gap">Gap</span></td></tr>
-</table>
-</section>
-<section class="card">
-<h2>3. Auditor value</h2>
-<p class="sub">Evidence-oriented vendor decisions: structured decision records, canonical exports, hash preview, cross-functional traceability, explicit gap visibility — not a single synthetic score. See <a href="auditor-value.md">auditor-value.md</a>.</p>
-</section>
-<section class="card">
-<h2>4. Vendor sponsorship</h2>
-<p class="sub">Sponsor the surface, not the score. Vendors may support labs, events, and tooling; they cannot buy ranking, hide gaps, or alter weighting. See <a href="vendor-sponsorship.md">vendor-sponsorship.md</a>.</p>
-</section>
-<section class="card">
-<h2>5. Evidence receipt preview <span class="unsigned">(UNSIGNED PREVIEW — not a Beacon attestation)</span></h2>
-<button onclick="gen()">Generate receipt</button>
-<pre id="out">{}</pre>
-</section>
-</main>
-<script>
-async function sha256(s){const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s));return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}
-async function gen(){
-const profile={regulated:p_reg.checked,ot:p_ot.checked,inVpc:p_vpc.checked};
-const body={schema:'aigovops.vendor-rfi/v0.1',generated:new Date().toISOString(),profile,stack:[{layer:'compliance',vendors:['Credo AI','IBM watsonx.governance'],status:'ready'},{layer:'policy-as-code',vendors:['OPA/Styra DAS','HashiCorp Sentinel'],status:'ready'},{layer:'runtime-guardrails',vendors:['Fiddler AI','NVIDIA NeMo Guardrails'],status:'integrate'},{layer:'ship-code',vendors:['Snyk','Wiz'],status:'integrate'},{layer:'ot-iiot',vendors:['Claroty','Dragos','Nozomi'],status:'gap'}]};
-const canonical=JSON.stringify(body,Object.keys(body).sort());
-const hash=await sha256(canonical);
-out.textContent=JSON.stringify({receipt:body,evidence_sha256:hash,signature:null,note:'Unsigned preview. Sign via Beacon (Ed25519+JCS) before use as audit evidence.'},null,2);
-}
-</script>
+  <h1>AIGovOps Foundation Vendor RFI/RFP Webapp</h1>
+  <p class="muted">Evidence-oriented vendor stack composer for <strong>Beacon</strong> and <strong>Umbrella</strong>, including an auditor value model and neutral vendor sponsorship framework.</p>
+
+  <section>
+    <h2>1) Evidence-Oriented Stack Composer (Beacon + Umbrella)</h2>
+    <div class="grid">
+      <div>
+        <h3>Beacon Stack</h3>
+        <label><input type="checkbox" value="Policy Engine" data-stack="beacon"> Policy Engine</label>
+        <label><input type="checkbox" value="Model Registry" data-stack="beacon"> Model Registry</label>
+        <label><input type="checkbox" value="Runtime Guardrails" data-stack="beacon"> Runtime Guardrails</label>
+      </div>
+      <div>
+        <h3>Umbrella Stack</h3>
+        <label><input type="checkbox" value="Identity Federation" data-stack="umbrella"> Identity Federation</label>
+        <label><input type="checkbox" value="Continuous Controls" data-stack="umbrella"> Continuous Controls</label>
+        <label><input type="checkbox" value="Audit Ledger" data-stack="umbrella"> Audit Ledger</label>
+      </div>
+    </div>
+    <p><strong>Composed stack:</strong> <span id="stackOutput">None selected.</span></p>
+  </section>
+
+  <section>
+    <h2>2) Auditor Value Model</h2>
+    <form id="vendorForm">
+      <div class="grid">
+        <label>Vendor name
+          <input id="vendorName" required>
+        </label>
+        <label>Evidence URL
+          <input id="evidenceUrl" type="url" placeholder="https://example.com/evidence" required>
+        </label>
+        <label>Control coverage (0-100)
+          <input id="coverage" type="number" min="0" max="100" value="70" required>
+        </label>
+        <label>Risk reduction (0-100)
+          <input id="riskReduction" type="number" min="0" max="100" value="60" required>
+        </label>
+        <label>Annual cost (USD)
+          <input id="annualCost" type="number" min="0" value="100000" required>
+        </label>
+      </div>
+      <button type="submit">Add vendor evidence</button>
+    </form>
+    <p class="muted">Auditor value score = 45% control coverage + 35% risk reduction + 20% cost efficiency.</p>
+    <p class="muted">Cost efficiency is normalized against a $500,000 annual-cost ceiling; values above this threshold are capped at zero cost-efficiency contribution.</p>
+    <table>
+      <thead>
+        <tr>
+          <th>Vendor</th>
+          <th>Evidence</th>
+          <th>Coverage</th>
+          <th>Risk Reduction</th>
+          <th>Annual Cost</th>
+          <th>Auditor Value Score</th>
+        </tr>
+      </thead>
+      <tbody id="vendorRows"></tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>3) Neutral Vendor Sponsorship Framework</h2>
+    <label>Sponsoring organization (optional)
+      <input id="sponsorName" placeholder="Vendor or partner sponsor">
+    </label>
+    <label><input id="conflictCheck" type="checkbox"> Potential conflict disclosed</label>
+    <p id="sponsorNote" class="muted">Sponsorship is tracked for transparency only and is excluded from scoring calculations.</p>
+    <p id="conflictNote"></p>
+  </section>
+
+  <script>
+    const stackOutput = document.getElementById('stackOutput');
+    const vendorForm = document.getElementById('vendorForm');
+    const vendorRows = document.getElementById('vendorRows');
+    const sponsorName = document.getElementById('sponsorName');
+    const conflictCheck = document.getElementById('conflictCheck');
+    const conflictNote = document.getElementById('conflictNote');
+    const COST_NORMALIZATION_CEILING = 500000;
+
+    function renderStack() {
+      const selections = Array.from(document.querySelectorAll('input[type="checkbox"][data-stack]:checked'))
+        .map((el) => `${el.dataset.stack}: ${el.value}`);
+      stackOutput.textContent = selections.length ? selections.join(' | ') : 'None selected.';
+    }
+
+    function computeAuditorValue(coverage, riskReduction, annualCost) {
+      const costEfficiency = Math.max(0, 100 - (annualCost / COST_NORMALIZATION_CEILING) * 100);
+      return (coverage * 0.45) + (riskReduction * 0.35) + (costEfficiency * 0.20);
+    }
+
+    document.querySelectorAll('input[data-stack]').forEach((el) => {
+      el.addEventListener('change', renderStack);
+    });
+
+    vendorForm.addEventListener('submit', (event) => {
+      event.preventDefault();
+      const vendor = document.getElementById('vendorName').value.trim();
+      const evidence = document.getElementById('evidenceUrl').value.trim();
+      const coverage = Number(document.getElementById('coverage').value);
+      const riskReduction = Number(document.getElementById('riskReduction').value);
+      const annualCost = Number(document.getElementById('annualCost').value);
+      const score = computeAuditorValue(coverage, riskReduction, annualCost).toFixed(2);
+
+      const row = document.createElement('tr');
+      const vendorCell = document.createElement('td');
+      vendorCell.textContent = vendor;
+
+      const evidenceCell = document.createElement('td');
+      const evidenceLink = document.createElement('a');
+      let parsedUrl;
+      try {
+        parsedUrl = new URL(evidence);
+      } catch {
+        alert('Please enter a valid URL.');
+        return;
+      }
+      if (parsedUrl.protocol !== 'https:') {
+        alert('Evidence URL must use HTTPS.');
+        return;
+      }
+      evidenceLink.href = parsedUrl.toString();
+      evidenceLink.target = '_blank';
+      evidenceLink.rel = 'noopener noreferrer';
+      evidenceLink.referrerPolicy = 'no-referrer';
+      evidenceLink.textContent = 'Evidence';
+      evidenceCell.appendChild(evidenceLink);
+      if (parsedUrl.hostname && (!window.location.hostname || parsedUrl.hostname !== window.location.hostname)) {
+        const externalNote = document.createElement('span');
+        externalNote.className = 'muted';
+        externalNote.textContent = ' (external domain; verify source)';
+        evidenceCell.appendChild(externalNote);
+      }
+
+      const coverageCell = document.createElement('td');
+      coverageCell.textContent = String(coverage);
+
+      const riskCell = document.createElement('td');
+      riskCell.textContent = String(riskReduction);
+
+      const costCell = document.createElement('td');
+      costCell.textContent = `$${annualCost.toLocaleString()}`;
+
+      const scoreCell = document.createElement('td');
+      scoreCell.className = 'score';
+      scoreCell.textContent = score;
+
+      row.append(vendorCell, evidenceCell, coverageCell, riskCell, costCell, scoreCell);
+      vendorRows.appendChild(row);
+      vendorForm.reset();
+    });
+
+    function renderSponsorship() {
+      const sponsor = sponsorName.value.trim();
+      const conflict = conflictCheck.checked;
+      conflictNote.textContent = conflict
+        ? `Conflict disclosed${sponsor ? ` for ${sponsor}` : ''}.`
+        : sponsor
+          ? `Sponsor recorded: ${sponsor}.`
+          : '';
+      conflictNote.className = conflict ? 'warn' : 'muted';
+    }
+
+    sponsorName.addEventListener('input', renderSponsorship);
+    conflictCheck.addEventListener('change', renderSponsorship);
+  </script>
 </body>
 </html>
