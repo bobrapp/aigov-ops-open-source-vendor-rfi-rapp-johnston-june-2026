@@ -4,6 +4,8 @@ AIGovOps Foundation open-source Vendor RFI/RFP webapp — evidence-oriented vend
 
 ## Quick start
 
+**New here? Start with the [audit-training tool](training.html)** — learn the AIGovOps governance stack, take a scored knowledge check, run a self-audit, and export a verifiable receipt.
+
 Open `index.html` (the overview) in a browser, then "Open webapp" to launch the advisor — or open
 `vendor-rfi-advisor.html` directly.
 
@@ -24,6 +26,7 @@ The advisor's vendor data and recommendation logic are derived from `docs/vendor
 ## Files
 
 - `index.html` — overview / landing
+- `training.html` — interactive audit-training tool (lessons + knowledge check + self-audit + completion receipt)
 - `vendor-rfi-advisor.html` — the advisor webapp (profiles → stack → recommendation → receipt)
 - `docs/vendor-guide.md` — AI Governance Policy-as-Code Vendor Guide for Fortune 100 Manufacturing (source content)
 - `docs/auditor-value.md` — evidence-oriented auditor value model
