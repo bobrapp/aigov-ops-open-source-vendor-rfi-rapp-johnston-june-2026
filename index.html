@@ -128,9 +128,15 @@
 
       const evidenceCell = document.createElement('td');
       const evidenceLink = document.createElement('a');
-      const parsedUrl = new URL(evidence);
+      let parsedUrl;
+      try {
+        parsedUrl = new URL(evidence);
+      } catch {
+        alert('Evidence URL must be a valid HTTPS URL.');
+        return;
+      }
       if (parsedUrl.protocol !== 'https:') {
-        alert('Evidence URL must use https.');
+        alert('Evidence URL must use HTTPS.');
         return;
       }
       evidenceLink.href = parsedUrl.toString();
