@@ -106,7 +106,7 @@
     }
 
     function computeAuditorValue(coverage, riskReduction, annualCost) {
-      const costEfficiency = Math.max(0, 100 - (annualCost / COST_NORMALIZATION_CEILING) * 100);
+      const costEfficiency = 100 - (annualCost / COST_NORMALIZATION_CEILING) * 100;
       return (coverage * 0.45) + (riskReduction * 0.35) + (costEfficiency * 0.20);
     }
 
@@ -133,7 +133,7 @@
       try {
         parsedUrl = new URL(evidence);
       } catch {
-        alert('Evidence URL format is invalid.');
+        alert('Please enter a valid URL starting with https://');
         return;
       }
       if (parsedUrl.protocol !== 'https:') {
@@ -146,7 +146,8 @@
       evidenceLink.referrerPolicy = 'no-referrer';
       evidenceLink.textContent = 'Evidence';
       evidenceCell.appendChild(evidenceLink);
-      if (parsedUrl.hostname && parsedUrl.hostname !== window.location.hostname) {
+      const isHttpHosted = ['http:', 'https:'].includes(window.location.protocol);
+      if (isHttpHosted && parsedUrl.hostname && parsedUrl.hostname !== window.location.hostname) {
         const externalNote = document.createElement('span');
         externalNote.className = 'muted';
         externalNote.textContent = ' (external domain; verify source)';
