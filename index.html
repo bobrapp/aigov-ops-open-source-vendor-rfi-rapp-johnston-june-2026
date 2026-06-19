@@ -64,7 +64,7 @@
       <button type="submit">Add vendor evidence</button>
     </form>
     <p class="muted">Auditor value score = 45% control coverage + 35% risk reduction + 20% cost efficiency.</p>
-    <p class="muted">Cost efficiency is normalized against a $500,000 annual-cost ceiling so higher-cost proposals are penalized consistently.</p>
+    <p class="muted">Cost efficiency is normalized against a $500,000 annual-cost ceiling; values above this threshold are capped at zero cost-efficiency contribution.</p>
     <table>
       <thead>
         <tr>
@@ -106,7 +106,7 @@
     }
 
     function computeAuditorValue(coverage, riskReduction, annualCost) {
-      const costEfficiency = 100 - (annualCost / COST_NORMALIZATION_CEILING) * 100;
+      const costEfficiency = Math.max(0, 100 - (annualCost / COST_NORMALIZATION_CEILING) * 100);
       return (coverage * 0.45) + (riskReduction * 0.35) + (costEfficiency * 0.20);
     }
 
@@ -133,7 +133,7 @@
       try {
         parsedUrl = new URL(evidence);
       } catch {
-        alert('Please enter a valid URL starting with https://');
+        alert('Please enter a valid URL.');
         return;
       }
       if (parsedUrl.protocol !== 'https:') {
@@ -146,8 +146,7 @@
       evidenceLink.referrerPolicy = 'no-referrer';
       evidenceLink.textContent = 'Evidence';
       evidenceCell.appendChild(evidenceLink);
-      const isHttpHosted = ['http:', 'https:'].includes(window.location.protocol);
-      if (isHttpHosted && parsedUrl.hostname && parsedUrl.hostname !== window.location.hostname) {
+      if (parsedUrl.hostname && (!window.location.hostname || parsedUrl.hostname !== window.location.hostname)) {
         const externalNote = document.createElement('span');
         externalNote.className = 'muted';
         externalNote.textContent = ' (external domain; verify source)';
