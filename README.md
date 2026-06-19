@@ -15,10 +15,11 @@ A single-file static webapp that serves two lenses for AIGovOps Foundation vendo
 
 ## Files
 
-- index.html - the webapp
+- index.html - the webapp (risk profile -> three-layer stack with gap-aware badges -> evidence receipt)
 - auditor-value.md - evidence-oriented auditor value model
 - vendor-sponsorship.md - neutral sponsorship model (sponsor the surface, not the score)
 - .github/workflows/pages.yml - GitHub Pages deploy workflow
+- CONTRIBUTING.md, CODE_OF_CONDUCT.md, SECURITY.md, .github/ISSUE_TEMPLATE/ - contribution + governance
 
 ## Hosting
 
