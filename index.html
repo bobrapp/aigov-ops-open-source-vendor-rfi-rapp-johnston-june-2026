@@ -64,6 +64,7 @@
       <button type="submit">Add vendor evidence</button>
     </form>
     <p class="muted">Auditor value score = 45% control coverage + 35% risk reduction + 20% cost efficiency.</p>
+    <p class="muted">Cost efficiency is normalized against a $500,000 annual-cost ceiling so higher-cost proposals are penalized consistently.</p>
     <table>
       <thead>
         <tr>
@@ -142,8 +143,15 @@
       evidenceLink.href = parsedUrl.toString();
       evidenceLink.target = '_blank';
       evidenceLink.rel = 'noopener noreferrer';
+      evidenceLink.referrerPolicy = 'no-referrer';
       evidenceLink.textContent = 'Evidence';
       evidenceCell.appendChild(evidenceLink);
+      if (parsedUrl.hostname && parsedUrl.hostname !== window.location.hostname) {
+        const externalNote = document.createElement('span');
+        externalNote.className = 'muted';
+        externalNote.textContent = ' (external domain; verify source)';
+        evidenceCell.appendChild(externalNote);
+      }
 
       const coverageCell = document.createElement('td');
       coverageCell.textContent = String(coverage);
