@@ -274,7 +274,6 @@
         product: 'Safe-RFI',
         lens: state.lens,
         profileToggles: profileList,
-        generatedAt: new Date().toISOString(),
         deterministicModel: 'v1',
         sections: sectionsObj,
         recommendations,
@@ -333,6 +332,14 @@
       URL.revokeObjectURL(url);
     }
 
+    function stableStringify(value) {
+      if (Array.isArray(value)) return `[${value.map(stableStringify).join(',')}]`;
+      if (value && typeof value === 'object') {
+        return `{${Object.keys(value).sort().map(k => `${JSON.stringify(k)}:${stableStringify(value[k])}`).join(',')}}`;
+      }
+      return JSON.stringify(value);
+    }
+
     function render() {
       lensSummary.textContent = state.lens === 'beacon'
         ? 'Beacon lens active: prioritize receipt-readable governance evidence.'
@@ -370,8 +377,9 @@
       });
 
       const artifact = currentArtifact();
+      const profileTag = artifact.profileToggles.join('-') || 'baseline';
       receiptPreview.textContent = JSON.stringify({
-        receiptId: `safe-rfi-${Date.now()}`,
+        receiptId: `safe-rfi-${artifact.lens}-${profileTag}`,
         product: artifact.product,
         lens: artifact.lens,
         profileToggles: artifact.profileToggles,
@@ -411,7 +419,7 @@
 
     document.getElementById('jsonExport').addEventListener('click', () => {
       const canonical = currentArtifact();
-      download('safe-rfi-export.json', JSON.stringify(canonical, Object.keys(canonical).sort(), 2), 'application/json');
+      download('safe-rfi-export.json', JSON.stringify(JSON.parse(stableStringify(canonical)), null, 2), 'application/json');
     });
 
     document.getElementById('yamlExport').addEventListener('click', () => {
