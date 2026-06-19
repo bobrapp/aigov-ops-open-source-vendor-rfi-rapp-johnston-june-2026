@@ -4,4 +4,4 @@ AIGovOps Foundation open-source Vendor RFI/RFP webapp — evidence-oriented vend
 
 ## Quick start
 
-Open `/home/runner/work/aigov-ops-open-source-vendor-rfi-rapp-johnston-june-2026/aigov-ops-open-source-vendor-rfi-rapp-johnston-june-2026/index.html` in a browser.
+Open `index.html` from the repository root in a browser.

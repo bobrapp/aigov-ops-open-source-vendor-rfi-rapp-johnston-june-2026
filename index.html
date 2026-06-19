@@ -96,6 +96,7 @@
     const sponsorName = document.getElementById('sponsorName');
     const conflictCheck = document.getElementById('conflictCheck');
     const conflictNote = document.getElementById('conflictNote');
+    const COST_NORMALIZATION_CEILING = 500000;
 
     function renderStack() {
       const selections = Array.from(document.querySelectorAll('input[type="checkbox"][data-stack]:checked'))
@@ -104,7 +105,7 @@
     }
 
     function computeAuditorValue(coverage, riskReduction, annualCost) {
-      const costEfficiency = Math.max(0, 100 - (annualCost / 500000) * 100);
+      const costEfficiency = Math.max(0, 100 - (annualCost / COST_NORMALIZATION_CEILING) * 100);
       return (coverage * 0.45) + (riskReduction * 0.35) + (costEfficiency * 0.20);
     }
 
@@ -128,8 +129,8 @@
       const evidenceCell = document.createElement('td');
       const evidenceLink = document.createElement('a');
       const parsedUrl = new URL(evidence);
-      if (!['http:', 'https:'].includes(parsedUrl.protocol)) {
-        alert('Evidence URL must use http or https.');
+      if (parsedUrl.protocol !== 'https:') {
+        alert('Evidence URL must use https.');
         return;
       }
       evidenceLink.href = parsedUrl.toString();
