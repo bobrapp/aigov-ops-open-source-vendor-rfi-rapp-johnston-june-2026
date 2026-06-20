@@ -1,5 +1,7 @@
 # aigov-ops-open-source-vendor-rfi-rapp-johnston-june-2026
 
+> **Source repo.** The canonical Foundation deployment is **https://aigovops-foundation.github.io/aigovops-vendor-rfi/** (org: `aigovops-foundation/aigovops-vendor-rfi`). This repo is the working source.
+
 AIGovOps Foundation open-source Vendor RFI/RFP webapp — evidence-oriented vendor stack composer for Beacon & Umbrella, with auditor value model and neutral vendor sponsorship framework.
 
 ## Quick start
