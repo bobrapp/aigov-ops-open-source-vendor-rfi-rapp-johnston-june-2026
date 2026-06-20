@@ -1,3 +1,12 @@
+> ## ⚠️ This repo has moved
+>
+> The Vendor RFI now lives in one place — the canonical Foundation repo:
+> **[aigovops-foundation/aigovops-vendor-rfi](https://github.com/aigovops-foundation/aigovops-vendor-rfi)** (live at https://aigovops-foundation.github.io/aigovops-vendor-rfi/).
+>
+> This mirror is **archived/read-only**. Open issues and PRs against the canonical repo.
+
+---
+
 # aigov-ops-open-source-vendor-rfi-rapp-johnston-june-2026
 
 > **Source repo.** The canonical Foundation deployment is **https://aigovops-foundation.github.io/aigovops-vendor-rfi/** (org: `aigovops-foundation/aigovops-vendor-rfi`). This repo is the working source.
